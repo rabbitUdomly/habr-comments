@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "Habr comment sort",
+  "description": "Сортрует комментарии на Хабре",
+  "version": "1.0.0",
+  "icons": {"128": "icon_128.png"},
+  "browser_action": {
+    "default_icon": "icon_128.png",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [ "https://habr.com/*" ],
+      "js": [ "app.js" ]
+    }
+  ],
+  "permissions": ["activeTab"]
+}
