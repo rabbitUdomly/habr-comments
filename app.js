@@ -44,7 +44,6 @@ sortHabr = function() {
 				scrolling = false;
 
 				instance.activeVisibleComment();
-				console.log('scroll');
 
 				scrolling = true;
 			}
