@@ -11,6 +11,7 @@
   "content_scripts": [
     {
       "matches": [ "https://habr.com/*" ],
+      "css": ["hab_comments.css"],
       "js": [ "app.js" ]
     }
   ],

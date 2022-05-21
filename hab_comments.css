@@ -1,0 +1,22 @@
+#ext_habr_comment_popup {
+    position: fixed;
+    right: 0;
+    top: 176px;
+    background: #fff;
+    padding: 10px;
+}
+#ext_habr_comment_sort_button {
+
+}
+#ext_habr_comment_rating_list {
+    border: 1px solid #ddd;
+    margin-top: 10px;
+    max-height: 300px;
+    overflow: auto;
+}
+.ext_habr_comment_rating_link {
+
+}
+.ext_habr_comment_rating_link.active {
+    background: red;
+}
