@@ -1,188 +1,200 @@
 
 sortHabr = function() {
-	var instance = this;
-	
-	var list = null;
+    var instance = this;
 
-	var ratingList = null;
-	
-	var sortDirection = 1;
+    var list = null;
 
-	var scrolling = true;
+    var ratingList = null;
 
-	this.init = function() {
-		
-		// init list comments
-		list = document.getElementsByClassName('tm-comments__tree');
-		if (list.length === 0) {
-			return;
-		}
-		list = list[0];
-		
-		// init popup
-		var popup = document.createElement('div');
-		popup.setAttribute('id', 'ext_habr_comment_popup');
-		document.body.appendChild(popup);
-		
-		// init sort button
-		var buttonSort = document.createElement('button');
-		buttonSort.setAttribute('id', 'ext_habr_comment_sort_button');
-		buttonSort.innerHTML = 'Sort root comments';
-		buttonSort.addEventListener('click', sortRoot);
-		popup.appendChild(buttonSort);
-		
-		// init rating list
-		ratingList = document.createElement('div');
-		ratingList.setAttribute('id', 'ext_habr_comment_rating_list');
-		popup.appendChild(ratingList);
+    var sortDirection = 1;
 
-		instance.renderRatingList(list.childNodes);
+    var scrolling = true;
 
-		// listener scroll
-		window.addEventListener('scroll', function(e) {
-			if (scrolling) {
-				scrolling = false;
+    this.init = function() {
 
-				instance.activeVisibleComment();
+        // init list comments
+        list = document.getElementsByClassName('tm-comments__tree');
+        if (list.length === 0) {
+            return;
+        }
+        list = list[0];
 
-				scrolling = true;
-			}
-		});
-	};
+        // init popup
+        var popup = document.getElementById('ext_habr_comment_popup');
+        if (popup) {
+            popup.remove();
+        }
 
-	this.renderRatingList = function(items, prefix = '') {
-		if (prefix === '') {
-			ratingList.innerHTML = '';
-		}
+        popup = document.createElement('div');
+        popup.setAttribute('id', 'ext_habr_comment_popup');
+        document.body.appendChild(popup);
 
-		for (var i = 0; i < items.length; i++) {
-			var item = items[i];
-			var rating = instance.getRating(item);
-			var commentId = instance.getCommentId(item);
+        // init sort button
+        var buttonSort = document.createElement('button');
+        buttonSort.setAttribute('id', 'ext_habr_comment_sort_button');
+        buttonSort.innerHTML = 'Sort root comments';
+        buttonSort.addEventListener('click', sortRoot);
+        popup.appendChild(buttonSort);
 
-			var ratingElement = document.createElement('div');
-			ratingElement.setAttribute('class', 'ext_habr_comment_rating_link');
-			ratingElement.setAttribute('id', 'ext_habr_comment_' + commentId);
-			ratingElement.innerHTML = prefix + '<a href="#">' + rating + '</a>';
-			ratingElement.addEventListener('click', instance.scrollToComment(item));
-			ratingList.appendChild(ratingElement);
+        // init rating list
+        ratingList = document.createElement('div');
+        ratingList.setAttribute('id', 'ext_habr_comment_rating_list');
+        popup.appendChild(ratingList);
 
-			for (var k = 0; k < item.childNodes.length; k++) {
-				if (item.childNodes[k].className === 'tm-comment-thread__children') {
-					instance.renderRatingList(item.childNodes[k].childNodes, prefix + '*');
-				}
-			}
-		}
-	};
+        instance.renderRatingList(list.childNodes);
 
-	this.scrollToComment = function(item) {
-		return (e) => {
-			e.preventDefault();
+        // listener scroll
+        window.addEventListener('scroll', function(e) {
+            if (scrolling) {
+                scrolling = false;
 
-			let position = item.getBoundingClientRect();
-			window.scrollTo(position.left, position.top + window.scrollY - instance.getHeaderHeight());
-		}
-	};
+                instance.activeVisibleComment();
 
-	this.sortRoot = function() {
-		var items = list.childNodes;
-		var itemsArr = [];
-		for (var i in items) {
-			if (items[i].nodeType === 1) { // get rid of the whitespace text nodes
-				itemsArr.push(items[i]);
-			}
-		}
+                scrolling = true;
+            }
+        });
+    };
 
-		itemsArr.sort(function(a, b) {
-		  return (instance.getRating(a) > instance.getRating(b) ? (-1 * sortDirection) : (sortDirection));
-		});
+    this.renderRatingList = function(items, prefix = '') {
+        if (prefix === '') {
+            ratingList.innerHTML = '';
+        }
 
-		for (i = 0; i < itemsArr.length; ++i) {
-		  list.appendChild(itemsArr[i]);
-		}
-		
-		sortDirection = sortDirection * -1;
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            var rating = instance.getRating(item);
+            var commentId = instance.getCommentId(item);
 
-		instance.renderRatingList(list.childNodes);
-	};
+            var ratingElement = document.createElement('div');
+            ratingElement.setAttribute('class', 'ext_habr_comment_rating_link');
+            ratingElement.setAttribute('id', 'ext_habr_comment_' + commentId);
+            ratingElement.innerHTML = prefix + '<a href="#">' + rating + '</a>';
+            ratingElement.addEventListener('click', instance.scrollToComment(item));
+            ratingList.appendChild(ratingElement);
 
-	this.getRating = function(item) {
-		for (var i = 0; i < item.childNodes.length; i++) {
-			if (item.childNodes[i].className === 'tm-comment-thread__comment') {
-				var ratings = item.childNodes[i].getElementsByClassName('tm-votes-meter__value_rating');
-				  
-				if (ratings.length === 0) {
-					return 0;
-				}
-				
-				return parseInt(ratings[0].textContent)
-			}
-		}
-		
-		return 0;
-	}
+            for (var k = 0; k < item.childNodes.length; k++) {
+                if (item.childNodes[k].className === 'tm-comment-thread__children') {
+                    instance.renderRatingList(item.childNodes[k].childNodes, prefix + '*');
+                }
+            }
+        }
+    };
 
-	this.getCommentId = function(item) {
-		for (var i = 0; i < item.childNodes.length; i++) {
-			if (item.childNodes[i].className === 'tm-comment-thread__comment') {
-				var target = item.childNodes[i].getElementsByClassName('tm-comment-thread__target');
-				if (target.length === 0) {
-					return '';
-				}
+    this.scrollToComment = function(item) {
+        return (e) => {
+            e.preventDefault();
 
-				var id = target[0].getAttribute('name');
-				id = id.split('_');
-				return id[id.length - 1];
-			}
-		}
+            let position = item.getBoundingClientRect();
+            window.scrollTo(position.left, position.top + window.scrollY - instance.getHeaderHeight());
+        }
+    };
 
-		return '';
-	}
+    this.sortRoot = function() {
+        var items = list.childNodes;
+        var itemsArr = [];
+        for (var i in items) {
+            if (items[i].nodeType === 1) { // get rid of the whitespace text nodes
+                itemsArr.push(items[i]);
+            }
+        }
 
-	this.activeVisibleComment = function () {
-		var activeLinks = document.querySelectorAll('.ext_habr_comment_rating_link.active');
-		for (var k = 0; k < activeLinks.length; k++) {
-			activeLinks[k].classList.remove("active");
-		}
+        itemsArr.sort(function(a, b) {
+            return (instance.getRating(a) > instance.getRating(b) ? (-1 * sortDirection) : (sortDirection));
+        });
 
-		var item = instance.getFirstVisibleComment();
-		if (item) {
-			var link = document.getElementById('ext_habr_comment_' + instance.getCommentId(item));
-			link.classList.add("active");
-			link.scrollIntoView();
-		}
-	};
+        for (i = 0; i < itemsArr.length; ++i) {
+            list.appendChild(itemsArr[i]);
+        }
 
-	this.getFirstVisibleComment = function() {
-		var items = document.getElementsByClassName('tm-comment-thread__comment');
-		for (var i = 0; i < items.length; i++) {
-			if (instance.checkVisible(items[i])) {
-				return items[i].parentNode;
-			}
-		}
+        sortDirection = sortDirection * -1;
 
-		return null;
-	};
+        instance.renderRatingList(list.childNodes);
+    };
 
-	this.checkVisible = function(item) {
-		var rect = item.getBoundingClientRect();
-		var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
-		return !(rect.bottom - instance.getHeaderHeight() < 0 || rect.top - viewHeight - instance.getHeaderHeight() >= 0);
-	}
+    this.getRating = function(item) {
+        for (var i = 0; i < item.childNodes.length; i++) {
+            if (item.childNodes[i].className === 'tm-comment-thread__comment') {
+                var ratings = item.childNodes[i].getElementsByClassName('tm-votes-meter__value_rating');
 
-	this.getHeaderHeight = function () {
-		var header = document.getElementsByClassName('tm-base-layout__header');
-		if (header.length === 0) {
-			return;
-		}
-		header = header[0];
-		return header.offsetHeight;
-	};
-	
-	this.init();
-	
-	return this;
+                if (ratings.length === 0) {
+                    return 0;
+                }
+
+                return parseInt(ratings[0].textContent)
+            }
+        }
+
+        return 0;
+    }
+
+    this.getCommentId = function(item) {
+        for (var i = 0; i < item.childNodes.length; i++) {
+            if (item.childNodes[i].className === 'tm-comment-thread__comment') {
+                var target = item.childNodes[i].getElementsByClassName('tm-comment-thread__target');
+                if (target.length === 0) {
+                    return '';
+                }
+
+                var id = target[0].getAttribute('name');
+                id = id.split('_');
+                return id[id.length - 1];
+            }
+        }
+
+        return '';
+    }
+
+    this.activeVisibleComment = function () {
+        var activeLinks = document.querySelectorAll('.ext_habr_comment_rating_link.active');
+        for (var k = 0; k < activeLinks.length; k++) {
+            activeLinks[k].classList.remove("active");
+        }
+
+        var item = instance.getFirstVisibleComment();
+        if (item) {
+            var link = document.getElementById('ext_habr_comment_' + instance.getCommentId(item));
+            link.classList.add("active");
+            link.scrollIntoView();
+        }
+    };
+
+    this.getFirstVisibleComment = function() {
+        var items = document.getElementsByClassName('tm-comment-thread__comment');
+        for (var i = 0; i < items.length; i++) {
+            if (instance.checkVisible(items[i])) {
+                return items[i].parentNode;
+            }
+        }
+
+        return null;
+    };
+
+    this.checkVisible = function(item) {
+        var rect = item.getBoundingClientRect();
+        var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+        return !(rect.bottom - instance.getHeaderHeight() < 0 || rect.top - viewHeight - instance.getHeaderHeight() >= 0);
+    }
+
+    this.getHeaderHeight = function () {
+        var header = document.getElementsByClassName('tm-base-layout__header');
+        if (header.length === 0) {
+            return;
+        }
+        header = header[0];
+        return header.offsetHeight;
+    };
+
+    this.init();
+
+    return this;
 }
 
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if( request.message === "start" ) {
+            sortHabr();
+        }
+    }
+);
 
 sortHabr();
