@@ -210,8 +210,10 @@ sortHabr = function() {
         var item = instance.getFirstVisibleComment();
         if (item) {
             var link = document.getElementById('ext_habr_comment_' + instance.getCommentId(item));
-            link.classList.add("active");
-            link.scrollIntoView();
+            if (link) {
+                link.classList.add("active");
+                link.scrollIntoView();
+            }
         }
     };
 
