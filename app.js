@@ -14,11 +14,15 @@ sortHabr = function() {
 
     var observers = [];
 
+    var updating = false;
+
     const waitTimeOut = 2000;
 
     const idSortPopup = 'ext_habr_comment_popup';
 
     this.init = function() {
+        console.log('init sort');
+
         // remove old sort popup if exist
         instance.removeSortPopup();
 
@@ -40,10 +44,22 @@ sortHabr = function() {
         if (blockComments) {
             // wait onload page data
             setTimeout(function () {
-                var observer = new MutationObserver(function() {
-                    setTimeout(function () {instance.init()}, waitTimeOut);
+                var observer = new MutationObserver(function(mutations) {
+                    let skipUpdate = false;
+                    for (let mutation of mutations) {
+                        if (mutation.type === 'characterData') {
+                            skipUpdate = true;
+                        }
+                    }
+                    if (!instance.updating && !skipUpdate) {
+                        instance.updating = true;
+                        setTimeout(function () {
+                            instance.init();
+                            instance.updating = false;
+                        }, waitTimeOut);
+                    }
                 });
-                observer.observe(blockComments, {childList: true, subtree: true});
+                observer.observe(blockComments, {childList: true, subtree: true, characterData: true, characterDataOldValue: true});
                 observers.push(observer);
             }, waitTimeOut);
         }
