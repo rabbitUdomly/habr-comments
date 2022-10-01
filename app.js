@@ -1,5 +1,5 @@
 
-sortHabr = function() {
+navigationHabr = function() {
     var instance = this;
 
     var list = null;
@@ -18,13 +18,13 @@ sortHabr = function() {
 
     const waitTimeOut = 2000;
 
-    const idSortPopup = 'ext_habr_comment_popup';
+    const idNavigationPopup = 'ext_habr_comment_popup';
 
     this.init = function() {
-        console.log('init sort');
+        console.log('init navigation');
 
-        // remove old sort popup if exist
-        instance.removeSortPopup();
+        // remove old navigation popup if exist
+        instance.removeNavigationPopup();
 
         // event change content
         var mainContent = document.querySelector('.tm-layout__container');
@@ -73,7 +73,7 @@ sortHabr = function() {
 
         // init popup
         var popup = document.createElement('div');
-        popup.setAttribute('id', idSortPopup);
+        popup.setAttribute('id', idNavigationPopup);
         document.body.appendChild(popup);
 
         // init sort button
@@ -101,8 +101,8 @@ sortHabr = function() {
         window.addEventListener('scroll', scrollEventCallback);
     };
 
-    this.removeSortPopup = function () {
-        var popup = document.getElementById(idSortPopup);
+    this.removeNavigationPopup = function () {
+        var popup = document.getElementById(idNavigationPopup);
         if (popup) {
             popup.remove();
         }
@@ -247,13 +247,13 @@ sortHabr = function() {
     return this;
 }
 
-var sortHabr = sortHabr();
+var navigationHabr = navigationHabr();
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if( request.message === "start" ) {
-            console.log("start init sort");
-            sortHabr.init();
+            console.log("start init navigation");
+            navigationHabr.init();
         }
     }
 );
