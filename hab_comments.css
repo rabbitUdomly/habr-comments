@@ -15,7 +15,10 @@
     overflow: auto;
 }
 .ext_habr_comment_rating_link {
-
+    cursor: pointer;
+}
+.ext_habr_comment_rating_link:hover {
+    background: #d9d9d9;
 }
 .ext_habr_comment_rating_link.active {
     background: red;

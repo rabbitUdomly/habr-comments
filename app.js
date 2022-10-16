@@ -126,7 +126,7 @@ navigationHabr = function() {
             var ratingElement = document.createElement('div');
             ratingElement.setAttribute('class', 'ext_habr_comment_rating_link');
             ratingElement.setAttribute('id', 'ext_habr_comment_' + commentId);
-            ratingElement.innerHTML = prefix + '<a href="#">' + rating + '</a>';
+            ratingElement.innerHTML = prefix + '<span>' + rating + '</span>';
             ratingElement.addEventListener('click', instance.scrollToComment(item));
             ratingList.appendChild(ratingElement);
 
@@ -143,7 +143,11 @@ navigationHabr = function() {
             e.preventDefault();
 
             let position = item.getBoundingClientRect();
-            window.scrollTo(position.left, position.top + window.scrollY - instance.getHeaderHeight());
+            window.scrollTo({
+                top: position.top + window.scrollY - instance.getHeaderHeight(),
+                left: position.left,
+                behavior: 'smooth'
+            });
         }
     };
 
@@ -212,7 +216,12 @@ navigationHabr = function() {
             var link = document.getElementById('ext_habr_comment_' + instance.getCommentId(item));
             if (link) {
                 link.classList.add("active");
-                link.scrollIntoView();
+                if (link.getBoundingClientRect().top < link.parentElement.getBoundingClientRect().top) {
+                    link.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+                }
+                if (link.getBoundingClientRect().bottom > link.parentElement.getBoundingClientRect().bottom) {
+                    link.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+                }
             }
         }
     };
