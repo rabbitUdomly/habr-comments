@@ -176,9 +176,12 @@ navigationHabr = function() {
     this.getRating = function(item) {
         for (var i = 0; i < item.childNodes.length; i++) {
             if (item.childNodes[i].className === 'tm-comment-thread__comment') {
-                var ratings = item.childNodes[i].querySelector('.tm-votes-lever__score');
+                var ratings = item.childNodes[i].querySelector('.tm-votes-meter__value_rating');
                 if (ratings == null) {
-                    return 0;
+                    ratings = item.childNodes[i].querySelector('.tm-votes-lever__score');
+                    if (ratings == null) {
+                        return 0;
+                    }
                 }
 
                 return parseInt(ratings.textContent)
