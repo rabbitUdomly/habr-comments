@@ -126,13 +126,13 @@ navigationHabr = function() {
             var ratingElement = document.createElement('div');
             ratingElement.setAttribute('class', 'ext_habr_comment_rating_link');
             ratingElement.setAttribute('id', 'ext_habr_comment_' + commentId);
-            ratingElement.innerHTML = prefix + '<span>' + rating + '</span>';
+            ratingElement.innerHTML = '<span class="ext_habr_comment_rating_link_prefix">' + prefix + '</span><span>' + rating + '</span>';
             ratingElement.addEventListener('click', instance.scrollToComment(item));
             ratingList.appendChild(ratingElement);
 
             for (var k = 0; k < item.childNodes.length; k++) {
                 if (item.childNodes[k].className === 'tm-comment-thread__children') {
-                    instance.renderRatingList(item.childNodes[k].childNodes, prefix + '*');
+                    instance.renderRatingList(item.childNodes[k].childNodes, prefix + '| ');
                 }
             }
         }
@@ -176,7 +176,7 @@ navigationHabr = function() {
     this.getRating = function(item) {
         for (var i = 0; i < item.childNodes.length; i++) {
             if (item.childNodes[i].className === 'tm-comment-thread__comment') {
-                var ratings = item.childNodes[i].querySelector('.tm-votes-meter__value_rating');
+                var ratings = item.childNodes[i].querySelector('.tm-votes-lever__score');
                 if (ratings == null) {
                     return 0;
                 }

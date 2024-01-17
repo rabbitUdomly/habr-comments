@@ -23,3 +23,6 @@
 .ext_habr_comment_rating_link.active {
     background: red;
 }
+.ext_habr_comment_rating_link_prefix {
+    color: #d3d3d3;
+}
